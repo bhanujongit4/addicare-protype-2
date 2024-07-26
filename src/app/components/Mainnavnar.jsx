@@ -13,6 +13,7 @@ const Mainnavbar = () => {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [profilePictureUrl, setProfilePictureUrl] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const fetchProfilePicture = async () => {
@@ -36,6 +37,7 @@ const Mainnavbar = () => {
   const handleLogout = async () => {
     await signOut({ redirect: false });
     setIsMenuOpen(false);
+    setIsMobileMenuOpen(false);
     router.push('');
   };
 
@@ -114,16 +116,85 @@ const Mainnavbar = () => {
           </div>
           <div className="flex items-center lg:hidden">
             <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="inline-flex items-center justify-center p-3 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-green-500"
             >
               <span className="sr-only">Open main menu</span>
-              <svg className="h-8 w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+              {isMobileMenuOpen ? (
+                <svg className="h-8 w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="h-8 w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
             </button>
           </div>
         </div>
+
+        {/* Mobile menu */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden">
+            <div className="pt-2 pb-3 space-y-1">
+              {status === "authenticated" && (
+                <>
+                  <Link href="/userplans" className="block pl-3 pr-4 py-2 border-l-4 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300">
+                    Start
+                  </Link>
+                  <Link href="/mood" className="block pl-3 pr-4 py-2 border-l-4 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300">
+                    Mood Tracker
+                  </Link>
+                  <Link href="/community" className="block pl-3 pr-4 py-2 border-l-4 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300">
+                    Community
+                  </Link>
+                  <Link href="/profile" className="block pl-3 pr-4 py-2 border-l-4 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300">
+                    Profile
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left pl-3 pr-4 py-2 border-l-4 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300"
+                  >
+                    Logout
+                  </button>
+                </>
+              )}
+              {status === "unauthenticated" && (
+                <>
+                  <Link href="/authentication/login" className="block pl-3 pr-4 py-2 border-l-4 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300">
+                    Login
+                  </Link>
+                  <Link href="/authentication/signup" className="block pl-3 pr-4 py-2 border-l-4 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300">
+                    Sign up
+                  </Link>
+                </>
+              )}
+            </div>
+            {status === "authenticated" && (
+              <div className="pt-4 pb-3 border-t border-gray-200">
+                <div className="flex items-center px-4">
+                  <div className="flex-shrink-0">
+                    <Image
+                      className="h-10 w-10 rounded-full"
+                      src={profilePictureUrl || "/default-avatar.png"}
+                      alt=""
+                      width={40}
+                      height={40}
+                      layout="fixed"
+                    />
+                  </div>
+                  <div className="ml-3">
+                    <div className="text-base font-medium text-gray-800">{session.user.name}</div>
+                    <div className="text-sm font-medium text-gray-500">{session.user.email}</div>
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <UserScoreDisplay />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </nav>
   );
