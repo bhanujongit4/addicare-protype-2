@@ -14,14 +14,6 @@ const LoginRoute = () => {
           <p className="text-gray-600 mt-2">Sign in to continue your journey</p>
         </div>
         <DynamicLoginForm />
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
-            Don't have an account?{" "}
-            <a href="/authentication/signup" className="font-medium text-gray-600 hover:text-gray-500">
-              Sign up now
-            </a>
-          </p>
-        </div>
       </div>
     </div>
   );
